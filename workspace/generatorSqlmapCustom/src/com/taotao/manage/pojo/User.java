@@ -1,5 +1,7 @@
 package com.taotao.manage.pojo;
 
+import java.util.Date;
+
 public class User {
     private String id;
 
@@ -14,6 +16,10 @@ public class User {
     private String tel;
 
     private String mail;
+
+    private Integer state;
+
+    private Date createTime;
 
     public String getId() {
         return id;
@@ -69,5 +75,21 @@ public class User {
 
     public void setMail(String mail) {
         this.mail = mail == null ? null : mail.trim();
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

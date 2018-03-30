@@ -1,5 +1,6 @@
 package com.taotao.manage.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,8 @@ public class LoginService implements ILoginService{
 		user.setRole(0);
 		String md5Password = Md5Util.MD5(user.getPassword()) ;
 		user.setPassword(md5Password);
+		user.setState(1);
+		user.setCreateTime(new Date());
 		userMapper.insert(user) ; 
 		return new ResponseEntity<User>(user,HttpStatus.OK) ; 
 	}

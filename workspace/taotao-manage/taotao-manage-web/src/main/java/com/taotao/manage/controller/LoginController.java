@@ -36,6 +36,12 @@ public class LoginController {
 		return loginService.registerUser(user) ; 
 	}
 	
+//	@RequestMapping("/confirmMail")
+//	public ResponseEntity<User> confirmMail(User user){
+//		
+//	}
+	
+	
 }
 
 
