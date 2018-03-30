@@ -1,0 +1,11 @@
+com\taotao\manage\pojo\UserExample.class
+com\taotao\manage\pojo\OrderState.class
+com\taotao\manage\pojo\UserExample$Criteria.class
+com\taotao\manage\pojo\OrderInfoExample$GeneratedCriteria.class
+com\taotao\manage\pojo\OrderInfoExample$Criterion.class
+com\taotao\manage\pojo\OrderInfo.class
+com\taotao\manage\pojo\UserExample$GeneratedCriteria.class
+com\taotao\manage\pojo\UserExample$Criterion.class
+com\taotao\manage\pojo\OrderInfoExample.class
+com\taotao\manage\pojo\User.class
+com\taotao\manage\pojo\OrderInfoExample$Criteria.class
