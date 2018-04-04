@@ -1,5 +1,6 @@
 package com.taotao.common.bean;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,12 @@ public class Order {
 
 	private String adminName;
 
+	private String buyUserId ; 
+	
+	private String sellUserId ; 
+	
+	private String adminUserId ; 
+	
 	private Date createTime;
 
 	private Date updatetime;
@@ -28,7 +35,9 @@ public class Order {
 	private String trackingNumber;
 
 	private String orderContend;
-
+	
+	private String createTimeString ; 
+	
 	public String getId() {
 		return id;
 	}
@@ -99,6 +108,10 @@ public class Order {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+		if(createTime != null){
+			SimpleDateFormat sdf = new SimpleDateFormat() ; 
+			this.createTimeString = sdf.format(createTime) ; 
+		}
 	}
 
 	public Date getUpdatetime() {
@@ -128,5 +141,40 @@ public class Order {
 	public Order() {
 
 	}
+
+	public String getCreateTimeString() {
+		return createTimeString;
+	}
+
+	public void setCreateTimeString(String createTimeString) {
+		this.createTimeString = createTimeString;
+	}
+
+	public String getBuyUserId() {
+		return buyUserId;
+	}
+
+	public void setBuyUserId(String buyUserId) {
+		this.buyUserId = buyUserId;
+	}
+
+	public String getSellUserId() {
+		return sellUserId;
+	}
+
+	public void setSellUserId(String sellUserId) {
+		this.sellUserId = sellUserId;
+	}
+
+	public String getAdminUserId() {
+		return adminUserId;
+	}
+
+	public void setAdminUserId(String adminUserId) {
+		this.adminUserId = adminUserId;
+	}
+	
+	
+	
 
 }
