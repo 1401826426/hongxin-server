@@ -31,7 +31,7 @@ public class LoginController {
 		return new ResponseEntity<UserDto>(userDto , HttpStatus.OK) ; 
 	}
 	
-	@RequestMapping("/register")
+	@RequestMapping("/register") 
 	public ResponseEntity<User> register(User user){
 		return loginService.registerUser(user) ; 
 	}

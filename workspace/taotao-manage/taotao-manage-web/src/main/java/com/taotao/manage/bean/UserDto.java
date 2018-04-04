@@ -25,7 +25,7 @@ public class UserDto {
 	public UserDto(User user){
 		this.name = user.getName() ; 
 		this.id = user.getId() ; 
-		this.mail = user.getTel() ; 
+		this.mail = user.getMail() ; 
 		this.role = user.getRole() ; 
 	}
 

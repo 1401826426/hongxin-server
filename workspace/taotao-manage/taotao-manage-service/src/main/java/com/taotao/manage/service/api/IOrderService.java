@@ -13,7 +13,7 @@ public interface IOrderService {
 
 	ResponseEntity<List<Order>> getOrder(int st, int num, int type, String userId);
 
-	ResponseEntity<Order> setAdminAck(String id, String orderId, String sellId);
+	ResponseEntity<Order> setAdminAck(String id, String orderId, String sellName);
 
 	ResponseEntity<Order> setSellAck(String id, String orderId, String trackingNumber);
 

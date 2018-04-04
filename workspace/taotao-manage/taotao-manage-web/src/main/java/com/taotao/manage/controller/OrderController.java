@@ -53,7 +53,7 @@ public class OrderController extends BaseController{
 	}
 	
 	@RequestMapping(value="/adminAck",method=RequestMethod.POST)
-	public ResponseEntity<Order> adminAck(@RequestParam("sell") String sellId , @RequestParam("orderId") String orderId , 
+	public ResponseEntity<Order> adminAck(@RequestParam("sell") String sellName , @RequestParam("orderId") String orderId , 
 			HttpServletRequest request){
 		Session session = getSession(request) ; 
 		if(session == null){
@@ -63,7 +63,7 @@ public class OrderController extends BaseController{
 		if(userDto == null){
 			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
 		}
-		return orderService.setAdminAck(userDto.getId() , orderId , sellId) ; 
+		return orderService.setAdminAck(userDto.getId() , orderId , sellName) ; 
 	}
 	
 	

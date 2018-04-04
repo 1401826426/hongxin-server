@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.util.StringUtils;
+
 import com.taotao.common.util.IdGenerator;
 
 public class OrderInfo {
@@ -145,14 +147,18 @@ public class OrderInfo {
     }
     
     public void resetPic(String root){
-    	if(picPath != null){
+    	if(!StringUtils.isEmpty(picPath)){
     		String[] pics = picPath.split(",") ;
     		StringBuilder sb = new StringBuilder("") ; 
     		for(String pic:pics){
 //    			pic.replaceAll("//", "/") ;
 //    			root.replaceAll("//", "/");  
 //    			System.err.println(pic +"  " +root);
-    			String newPic = pic.substring(pic.lastIndexOf(root)+root.length()-1) ;
+    			int index = pic.lastIndexOf(root);
+    			if(index == -1){
+    				continue; 
+    			}
+    			String newPic = pic.substring(index+root.length()) ;
     			sb.append(newPic+",");
     		}
     		this.picPath = sb.toString() ; 
@@ -162,7 +168,7 @@ public class OrderInfo {
     
     public List<String> getPicPath(String root){
     	List<String> list = new ArrayList<String>() ; 
-    	if(picPath != null){
+    	if(!StringUtils.isEmpty(picPath)){
     		String[] pics = picPath.split(",") ;
     		StringBuilder sb = new StringBuilder("") ; 
     		for(String pic:pics){  

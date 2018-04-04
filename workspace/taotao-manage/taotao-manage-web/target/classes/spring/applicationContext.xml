@@ -8,13 +8,13 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
 
 	<!-- 使用spring自带的占位符替换功能 -->
-	<bean
+	<!-- <bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<!-- 允许JVM参数覆盖 -->
+		允许JVM参数覆盖
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
-		<!-- 忽略没有找到的资源文件 -->
+		忽略没有找到的资源文件
 		<property name="ignoreResourceNotFound" value="true" />
-		<!-- 配置资源文件 -->
+		配置资源文件
 		<property name="locations">
 			<list>
 				<value>classpath:jdbc.properties</value>
@@ -23,6 +23,8 @@
 			</list>
 		</property>
 	</bean>
+	 -->
+	<context:property-placeholder location="classpath:*.properties" file-encoding="UTF-8"/>
 	
 	<!-- 扫描包 -->
 	<context:component-scan base-package="com.taotao"/>

@@ -117,23 +117,33 @@ public class OrderService implements IOrderService{
 		}
 		order.setPics(orderInfo.getPicPath(propertiesService.getIMAGE_BASE_URL()));
 		order.setOrderContend(orderInfo.getOrderContend());
-		order.setOrderNumber(orderInfo.getOrderContend());
+		order.setOrderNumber(orderInfo.getOrderNumber());
 		order.setCreateTime(orderInfo.getCreateTime());
 		order.setUpdatetime(orderInfo.getUpdatetime());
 		order.setState(orderInfo.getState());
 		order.setTrackingNumber(orderInfo.getTrackingNumber());
+		order.setBuyUserId(orderInfo.getBuyUser());
+		order.setSellUserId(orderInfo.getSellUser());
+		order.setAdminUserId(orderInfo.getAdmin());
 		return order;
 	}
 
 	@Override
-	public ResponseEntity<Order> setAdminAck(String userid, String orderId, String sellId) {
+	public ResponseEntity<Order> setAdminAck(String userid, String orderId, String sellName) {
+		
 		User admin = getUser(userid) ; 
 		if(admin == null){
 			return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ;
 		}
-		User sell = getUser(sellId) ;
-		if(sell == null){
-			return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ; 
+		UserExample example1 = new UserExample() ; 
+		Criteria criteria1 = example1.createCriteria() ;
+		criteria1.andNameEqualTo(sellName) ;
+		List<User> user = userMapper.selectByExample(example1) ;
+		User sell = null ; 
+		if(user == null || user.size() != 1){
+			return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ; 			
+		}else{
+			sell = user.get(0) ; 
 		}
 		OrderInfoExample example = new OrderInfoExample() ; 
 		com.taotao.manage.pojo.OrderInfoExample.Criteria criteria = example.createCriteria() ; 
@@ -144,7 +154,7 @@ public class OrderService implements IOrderService{
 			if(order.getState() != OrderState.CREATE.getState()){
 				return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ;
 			}
-			order.setSellUser(sellId);
+			order.setSellUser(sell.getId());
 			order.setState(OrderState.ADMIN_ACK.getState());
 			order.setUpdatetime(new Date());
 			orderInfoMapper.updateByPrimaryKey(order) ; 
@@ -176,6 +186,7 @@ public class OrderService implements IOrderService{
 			order.setUpdatetime(new Date());
 			orderInfoMapper.updateByPrimaryKey(order) ; 
 			User user = getUser(order.getBuyUser()) ; 
+			System.err.println(propertiesService.getBUY_MAIL_SUBJECT() +"   " + propertiesService.getBUY_MAIL_CONTENT());
 			Mail mail = new Mail(user.getMail() , propertiesService.getBUY_MAIL_SUBJECT(),propertiesService.getBUY_MAIL_CONTENT()) ; 
 			sendMailUtil.sendMailAync(mail) ; 
 			return new ResponseEntity<Order>(getOrder(order),HttpStatus.OK);

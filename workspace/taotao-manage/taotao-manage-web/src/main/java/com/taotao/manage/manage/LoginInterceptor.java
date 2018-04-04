@@ -3,8 +3,8 @@ package com.taotao.manage.manage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UrlPathHelper;
@@ -18,7 +18,7 @@ public class LoginInterceptor implements HandlerInterceptor{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String url = urlPathHelper.getLookupPathForRequest(request) ; 
-		if("/login".equals(url) || "/register".equals(url)){
+		if(!org.springframework.util.StringUtils.isEmpty(url) && ("/login".equals(url) || "/register".equals(url) || url.contains("image"))){
 			return true; 
 		}
 		String sessionId = request.getHeader("session") ;
