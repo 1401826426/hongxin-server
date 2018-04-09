@@ -11,6 +11,7 @@
     <result column="mail" property="mail" jdbcType="VARCHAR" />
     <result column="state" property="state" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="check_num" property="checkNum" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -71,7 +72,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, name, password, role, wechat, tel, mail, state, create_time
+    id, name, password, role, wechat, tel, mail, state, create_time, check_num
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.taotao.manage.pojo.UserExample" >
     select
@@ -96,12 +97,12 @@
   <insert id="insert" parameterType="com.taotao.manage.pojo.User" >
     insert into user (id, name, password, 
       role, wechat, tel, 
-      mail, state, create_time
-      )
+      mail, state, create_time, 
+      check_num)
     values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{role,jdbcType=INTEGER}, #{wechat,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, 
-      #{mail,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
-      )
+      #{mail,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{checkNum,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.taotao.manage.pojo.User" >
     insert into user
@@ -133,6 +134,9 @@
       <if test="createTime != null" >
         create_time,
       </if>
+      <if test="checkNum != null" >
+        check_num,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -161,6 +165,9 @@
       </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkNum != null" >
+        #{checkNum,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -200,6 +207,9 @@
       <if test="record.createTime != null" >
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.checkNum != null" >
+        check_num = #{record.checkNum,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -215,7 +225,8 @@
       tel = #{record.tel,jdbcType=VARCHAR},
       mail = #{record.mail,jdbcType=VARCHAR},
       state = #{record.state,jdbcType=INTEGER},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      check_num = #{record.checkNum,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>

@@ -704,6 +704,76 @@ public class UserExample {
             addCriterion("create_time not between", value1, value2, "createTime");
             return (Criteria) this;
         }
+
+        public Criteria andCheckNumIsNull() {
+            addCriterion("check_num is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumIsNotNull() {
+            addCriterion("check_num is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumEqualTo(String value) {
+            addCriterion("check_num =", value, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumNotEqualTo(String value) {
+            addCriterion("check_num <>", value, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumGreaterThan(String value) {
+            addCriterion("check_num >", value, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumGreaterThanOrEqualTo(String value) {
+            addCriterion("check_num >=", value, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumLessThan(String value) {
+            addCriterion("check_num <", value, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumLessThanOrEqualTo(String value) {
+            addCriterion("check_num <=", value, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumLike(String value) {
+            addCriterion("check_num like", value, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumNotLike(String value) {
+            addCriterion("check_num not like", value, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumIn(List<String> values) {
+            addCriterion("check_num in", values, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumNotIn(List<String> values) {
+            addCriterion("check_num not in", values, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumBetween(String value1, String value2) {
+            addCriterion("check_num between", value1, value2, "checkNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andCheckNumNotBetween(String value1, String value2) {
+            addCriterion("check_num not between", value1, value2, "checkNum");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

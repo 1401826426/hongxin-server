@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,8 +22,8 @@ public class LoginController {
 	@RequestMapping("/login")
 	public ResponseEntity<UserDto> login(@RequestParam("name") String name , 
 			@RequestParam("password") String password){
-		User user = loginService.loinUser(name, password) ; 
-		if(user == null){ 
+		User user = loginService.doLoinUser(name, password) ; 
+		if(user == null || user.getState() == 0){ 
 			return new ResponseEntity<UserDto>(HttpStatus.BAD_REQUEST) ; 
 		}
 		UserDto userDto = new UserDto(user) ; 
@@ -32,14 +33,15 @@ public class LoginController {
 	}
 	
 	@RequestMapping("/register") 
-	public ResponseEntity<User> register(User user){
-		return loginService.registerUser(user) ; 
+	public ResponseEntity<String> register(User user){
+		return loginService.doRegisterUser(user) ; 
 	}
 	
-//	@RequestMapping("/confirmMail")
-//	public ResponseEntity<User> confirmMail(User user){
-//		
-//	}
+	@RequestMapping("/confirmMail/{userId}/{check}")
+	public ResponseEntity<String> confirmMail(@PathVariable("userId") String userId,@PathVariable("check") String check){
+		return loginService.doConfirmMail(userId,check) ; 
+		
+	}
 	
 	
 }

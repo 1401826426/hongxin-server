@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class Order {
+public class Order extends ErrorMsg{
 
 	private String id;
 
@@ -173,6 +173,12 @@ public class Order {
 	public void setAdminUserId(String adminUserId) {
 		this.adminUserId = adminUserId;
 	}
+
+	public Order(String msg) {
+		super(msg);
+	}
+	
+	
 	
 	
 	

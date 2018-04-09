@@ -6,8 +6,10 @@ import com.taotao.manage.pojo.User;
 
 public interface ILoginService {
 	
-	public User loinUser(String name , String password) ; 
+	public User doLoinUser(String name , String password) ; 
 	
-	public ResponseEntity<User> registerUser(User user) ; 
+	public ResponseEntity<String> doRegisterUser(User user) ;
+
+	public ResponseEntity<String> doConfirmMail(String userId, String check); 
 	
 }

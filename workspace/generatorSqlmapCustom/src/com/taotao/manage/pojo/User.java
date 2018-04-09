@@ -21,6 +21,8 @@ public class User {
 
     private Date createTime;
 
+    private String checkNum;
+
     public String getId() {
         return id;
     }
@@ -91,5 +93,13 @@ public class User {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getCheckNum() {
+        return checkNum;
+    }
+
+    public void setCheckNum(String checkNum) {
+        this.checkNum = checkNum == null ? null : checkNum.trim();
     }
 }

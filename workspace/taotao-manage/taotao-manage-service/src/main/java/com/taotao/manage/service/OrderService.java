@@ -133,7 +133,7 @@ public class OrderService implements IOrderService{
 		
 		User admin = getUser(userid) ; 
 		if(admin == null){
-			return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ;
+			return new ResponseEntity<Order>(new Order("不是管理员") , HttpStatus.BAD_REQUEST) ;
 		}
 		UserExample example1 = new UserExample() ; 
 		Criteria criteria1 = example1.createCriteria() ;
@@ -141,7 +141,7 @@ public class OrderService implements IOrderService{
 		List<User> user = userMapper.selectByExample(example1) ;
 		User sell = null ; 
 		if(user == null || user.size() != 1){
-			return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ; 			
+			return new ResponseEntity<Order>(new Order("没有对应的卖家账号") , HttpStatus.BAD_REQUEST) ; 			
 		}else{
 			sell = user.get(0) ; 
 		}
@@ -152,7 +152,7 @@ public class OrderService implements IOrderService{
 		if(orders != null && orders.size() == 1){
 			OrderInfo order = orders.get(0) ; 
 			if(order.getState() != OrderState.CREATE.getState()){
-				return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ;
+				return new ResponseEntity<Order>(new Order("不是在待确认状态"),HttpStatus.BAD_REQUEST) ;
 			}
 			order.setSellUser(sell.getId());
 			order.setState(OrderState.ADMIN_ACK.getState());
@@ -162,7 +162,7 @@ public class OrderService implements IOrderService{
 			sendMailUtil.sendMailAync(mail) ; 
 			return new ResponseEntity<Order>(getOrder(order),HttpStatus.OK);
 		}else{
-			return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ;
+			return new ResponseEntity<Order>(new Order("没有这个订单"),HttpStatus.BAD_REQUEST) ;
 		}
 	}
 
@@ -170,7 +170,7 @@ public class OrderService implements IOrderService{
 	public ResponseEntity<Order> setSellAck(String userid, String orderId, String trackingNumber) {
 		User sell = getUser(userid) ;
 		if(sell == null){
-			return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ; 
+			return new ResponseEntity<Order>(new Order("没有账号"),HttpStatus.BAD_REQUEST) ; 
 		}
 		OrderInfoExample example = new OrderInfoExample() ; 
 		com.taotao.manage.pojo.OrderInfoExample.Criteria criteria = example.createCriteria() ; 
@@ -179,7 +179,7 @@ public class OrderService implements IOrderService{
 		if(orders != null && orders.size() == 1){
 			OrderInfo order = orders.get(0) ; 
 			if(order.getState() != OrderState.ADMIN_ACK.getState()){
-				return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ;
+				return new ResponseEntity<Order>(new Order("不是带发货状态"),HttpStatus.BAD_REQUEST) ;
 			}
 			order.setState(OrderState.SELLER_ACK.getState());
 			order.setTrackingNumber(trackingNumber);
@@ -191,7 +191,7 @@ public class OrderService implements IOrderService{
 			sendMailUtil.sendMailAync(mail) ; 
 			return new ResponseEntity<Order>(getOrder(order),HttpStatus.OK);
 		}else{
-			return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ;
+			return new ResponseEntity<Order>(new Order("没有这个订单"),HttpStatus.BAD_REQUEST) ;
 		}
 	}
 
@@ -199,7 +199,7 @@ public class OrderService implements IOrderService{
 	public ResponseEntity<Order> setBuyAck(String userid, String orderId) {
 		User buy = getUser(userid); 
 		if(buy == null){
-			return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ;
+			return new ResponseEntity<Order>(new Order("没有用户"),HttpStatus.BAD_REQUEST) ;
 		}
 		OrderInfoExample example = new OrderInfoExample() ; 
 		com.taotao.manage.pojo.OrderInfoExample.Criteria criteria = example.createCriteria() ; 
@@ -208,14 +208,14 @@ public class OrderService implements IOrderService{
 		if(orders != null && orders.size() == 1){
 			OrderInfo order = orders.get(0) ; 
 			if(order.getState() != OrderState.SELLER_ACK.getState()){
-				return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ;
+				return new ResponseEntity<Order>(new Order("不是待发货状态"),HttpStatus.BAD_REQUEST) ;
 			}
 			order.setState(OrderState.BUYER_ACK.getState());
 			order.setUpdatetime(new Date());
 			orderInfoMapper.updateByPrimaryKey(order) ; 
 			return new ResponseEntity<Order>(getOrder(order),HttpStatus.OK);
 		}else{
-			return new ResponseEntity<Order>(HttpStatus.BAD_REQUEST) ;
+			return new ResponseEntity<Order>(new Order("没有这个订单"),HttpStatus.BAD_REQUEST) ;
 		}
 	}
 

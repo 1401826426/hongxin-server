@@ -25,16 +25,16 @@ public class ImageService implements IImageService{
 	@Override
 	public ResponseEntity<String> uploadImage(MultipartFile uploadFile) {
 		if(uploadFile.isEmpty()){
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST) ; 
+			return new ResponseEntity<>("文件为空",HttpStatus.BAD_REQUEST) ; 
 		}
 		String fileName =  uploadFile.getOriginalFilename() ; 
 		if(fileName == null){
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST) ;
+			return new ResponseEntity<>("没有名字",HttpStatus.BAD_REQUEST) ;
 		}
 		String suffix = fileName.substring(fileName.lastIndexOf(".")) ; 
 		Set<String> set = propertieService.getImageAllow() ;
 		if(!set.contains(suffix)){
-			return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE) ;
+			return new ResponseEntity<>("不支持这种图片类型",HttpStatus.BAD_REQUEST) ;
 		}
 		String name = null ; 
 		try{

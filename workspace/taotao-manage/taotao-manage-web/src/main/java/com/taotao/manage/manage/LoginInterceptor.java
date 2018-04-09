@@ -18,7 +18,8 @@ public class LoginInterceptor implements HandlerInterceptor{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		String url = urlPathHelper.getLookupPathForRequest(request) ; 
-		if(!org.springframework.util.StringUtils.isEmpty(url) && ("/login".equals(url) || "/register".equals(url) || url.contains("image"))){
+		if(!org.springframework.util.StringUtils.isEmpty(url) && ("/login".equals(url) 
+				|| "/register".equals(url) || url.contains("image") || url.contains("confirmMail"))){
 			return true; 
 		}
 		String sessionId = request.getHeader("session") ;
