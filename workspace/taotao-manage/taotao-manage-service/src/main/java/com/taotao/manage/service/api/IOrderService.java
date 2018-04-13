@@ -15,8 +15,13 @@ public interface IOrderService {
 
 	ResponseEntity<Order> setAdminAck(String id, String orderId, String sellName);
 
-	ResponseEntity<Order> setSellAck(String id, String orderId, String trackingNumber);
+	ResponseEntity<Order> setSellAck(String id, String orderId, String trackingNumber, int num);
 
-	ResponseEntity<Order> setBuyAck(String id, String orderId);
+	ResponseEntity<Order> setBuyAck(String id, String orderId, String trackingNumber);
+
+
+	ResponseEntity<Order> adminAckOrder(String orderId, String userId);
+
+	ResponseEntity<Order> uploadEvidence(String orderId, String picPath, String id);
 
 }

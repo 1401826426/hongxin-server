@@ -102,4 +102,30 @@ public class User {
     public void setCheckNum(String checkNum) {
         this.checkNum = checkNum == null ? null : checkNum.trim();
     }
+    
+    public boolean isAdmin(){
+    	return this.role == 1; 
+    }
+    
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

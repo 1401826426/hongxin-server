@@ -13,6 +13,7 @@ import com.taotao.common.bean.Mail;
 import com.taotao.common.bean.Order;
 import com.taotao.common.util.IdGenerator;
 import com.taotao.manage.mapper.OrderInfoMapper;
+import com.taotao.manage.mapper.OrderTrackingMapper;
 import com.taotao.manage.mapper.UserMapper;
 import com.taotao.manage.pojo.OrderInfo;
 import com.taotao.manage.pojo.OrderInfoExample;
@@ -31,6 +32,9 @@ public class OrderService implements IOrderService{
 	
 	@Autowired
 	private UserMapper userMapper ; 
+	
+	@Autowired
+	private OrderTrackingMapper orderTrackingMapper ; 
 	
 	@Autowired
 	private PropertieService propertiesService ; 
@@ -132,7 +136,7 @@ public class OrderService implements IOrderService{
 	public ResponseEntity<Order> setAdminAck(String userid, String orderId, String sellName) {
 		
 		User admin = getUser(userid) ; 
-		if(admin == null){
+		if(admin == null || !admin.isAdmin()){
 			return new ResponseEntity<Order>(new Order("不是管理员") , HttpStatus.BAD_REQUEST) ;
 		}
 		UserExample example1 = new UserExample() ; 
@@ -167,7 +171,7 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public ResponseEntity<Order> setSellAck(String userid, String orderId, String trackingNumber) {
+	public ResponseEntity<Order> setSellAck(String userid, String orderId, String trackingNumber,int num) {
 		User sell = getUser(userid) ;
 		if(sell == null){
 			return new ResponseEntity<Order>(new Order("没有账号"),HttpStatus.BAD_REQUEST) ; 
@@ -196,7 +200,7 @@ public class OrderService implements IOrderService{
 	}
 
 	@Override
-	public ResponseEntity<Order> setBuyAck(String userid, String orderId) {
+	public ResponseEntity<Order> setBuyAck(String userid, String orderId,String trackingNumber) {
 		User buy = getUser(userid); 
 		if(buy == null){
 			return new ResponseEntity<Order>(new Order("没有用户"),HttpStatus.BAD_REQUEST) ;
@@ -217,6 +221,31 @@ public class OrderService implements IOrderService{
 		}else{
 			return new ResponseEntity<Order>(new Order("没有这个订单"),HttpStatus.BAD_REQUEST) ;
 		}
+	}
+
+
+	@Override
+	public ResponseEntity<Order> adminAckOrder(String orderId, String userId) {
+		User user = getUser(userId) ; 
+		if(user == null || !user.isAdmin()){
+			return new ResponseEntity<Order>(new Order("不是管理员") , HttpStatus.BAD_REQUEST) ;
+		}
+		OrderInfo  orderInfo = getOrderInfo(orderId) ; 
+		if(orderInfo.getState() != OrderState.CREATE.getState()){
+			return new ResponseEntity<Order>(new Order("订单不是刚创建状态") , HttpStatus.BAD_REQUEST) ;
+		}
+		return null;
+	}
+
+	private OrderInfo getOrderInfo(String orderId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<Order> uploadEvidence(String orderId, String picPath, String id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

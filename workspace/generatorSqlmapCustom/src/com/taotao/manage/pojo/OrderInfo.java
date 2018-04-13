@@ -27,6 +27,8 @@ public class OrderInfo {
 
     private String orderContend;
 
+    private Integer num;
+
     public String getId() {
         return id;
     }
@@ -121,5 +123,13 @@ public class OrderInfo {
 
     public void setOrderContend(String orderContend) {
         this.orderContend = orderContend == null ? null : orderContend.trim();
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
     }
 }

@@ -11,7 +11,7 @@
 		</commentGenerator>
 		<!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://120.79.54.108:3306/order" userId="root"
+			connectionURL="jdbc:mysql://120.79.54.108:3306/order_test" userId="root"
 			password="qwert">
 		</jdbcConnection>
 		<!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和 
@@ -44,5 +44,6 @@
 		<!-- 指定数据库表 -->
 		<table schema="" tableName="order_info"></table>
 		<table schema="" tableName="user"></table>
+		<table schema="" tableName="order_tracking"></table>
 	</context>
 </generatorConfiguration>

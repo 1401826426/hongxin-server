@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.springframework.util.StringUtils;
 
-import com.taotao.common.util.IdGenerator;
-
 public class OrderInfo {
     private String id;
 
@@ -32,6 +30,8 @@ public class OrderInfo {
     private String trackingNumber;
 
     private String orderContend;
+
+    private Integer num;
 
     public String getId() {
         return id;
@@ -128,24 +128,14 @@ public class OrderInfo {
     public void setOrderContend(String orderContend) {
         this.orderContend = orderContend == null ? null : orderContend.trim();
     }
-    
-    public OrderInfo Clone(){
-    	OrderInfo orderInfo = new OrderInfo() ; 
-		orderInfo.setUserId(getId()) ; 
-		orderInfo.setOrderNumber(getOrderNumber());
-		orderInfo.setCreateTime(getCreateTime());
-		orderInfo.setUpdatetime(orderInfo.getUpdatetime());
-		orderInfo.setId(IdGenerator.generateStringId());
-		orderInfo.setBuyUser(getBuyUser());
-		orderInfo.setSellUser(getSellUser());
-		orderInfo.setAdmin(getId());
-		orderInfo.setOrderContend(getOrderContend());
-		orderInfo.setPicPath(getPicPath());
-		orderInfo.setState(getState()) ; 
-		orderInfo.setTrackingNumber(getTrackingNumber());
-		return orderInfo ; 
+
+    public Integer getNum() {
+        return num;
     }
-    
+
+    public void setNum(Integer num) {
+        this.num = num;
+    }
     public void resetPic(String root){
     	if(!StringUtils.isEmpty(picPath)){
     		String[] pics = picPath.split(",") ;
@@ -179,22 +169,4 @@ public class OrderInfo {
     	return list ; 
     }
     
-    public static void main(String[] args) {
-    	OrderInfo orderInfo = new OrderInfo(); 
-    	String pic = "http://123//456//789,http://123//789" ; 
-    	orderInfo.setPicPath(pic); 
-    	orderInfo.resetPic("http://123/");
-    	System.err.println(orderInfo.getPicPath());
-	}
 }
-
-
-
-
-
-
-
-
-
-
-

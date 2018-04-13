@@ -38,6 +38,9 @@ public class Order extends ErrorMsg{
 	
 	private String createTimeString ; 
 	
+	private List<OrderTrackingDto> orderTrackings  ; 
+	
+	
 	public String getId() {
 		return id;
 	}
