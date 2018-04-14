@@ -40,6 +40,7 @@ public class Order extends ErrorMsg{
 	
 	private List<OrderTrackingDto> orderTrackings  ; 
 	
+	private int num; 
 	
 	public String getId() {
 		return id;
@@ -175,6 +176,24 @@ public class Order extends ErrorMsg{
 
 	public void setAdminUserId(String adminUserId) {
 		this.adminUserId = adminUserId;
+	}
+
+	
+	
+	public List<OrderTrackingDto> getOrderTrackings() {
+		return orderTrackings;
+	}
+
+	public void setOrderTrackings(List<OrderTrackingDto> orderTrackings) {
+		this.orderTrackings = orderTrackings;
+	}
+
+	public int getNum() {
+		return num;
+	}
+
+	public void setNum(int num) {
+		this.num = num;
 	}
 
 	public Order(String msg) {

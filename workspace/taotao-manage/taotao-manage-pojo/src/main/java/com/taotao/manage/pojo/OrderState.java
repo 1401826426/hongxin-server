@@ -7,9 +7,9 @@ public enum OrderState {
 	BUYER_UPLOAD_EVIDENCE(3),
 	ADMIN_ACK(4),
 	IN_DELIVERY(5),
-	DONE(6) ,
-	SELLER_ACK(3) , 
-	BUYER_ACK(4) ; 
+	SELLER_ACK(6) ,
+	DONE(7) ,
+	;
  	
 	private int state ; 
 	

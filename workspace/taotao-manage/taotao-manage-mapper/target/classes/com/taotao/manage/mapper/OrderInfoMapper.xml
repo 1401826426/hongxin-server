@@ -335,4 +335,15 @@
       num = #{num,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <select id="selectOrders" resultMap="BaseResultMap">
+		select * from order_info where (buy_user = #{userId} or
+		sell_user = #{userId} or admin = #{userId})
+		and state = #{state} order by updatetime desc limit #{st},#{num} ;
+	</select>
+
+	<select id="selectAllOrders" resultMap="BaseResultMap">
+		select * from order_info where buy_user = #{userId} or 
+		sell_user = #{userId} or admin = #{userId}
+		order by updatetime desc limit #{st},#{num} ;
+	</select>
 </mapper>

@@ -1,0 +1,16 @@
+com\taotao\manage\controller\ImageController.class
+com\taotao\manage\manage\Session.class
+com\taotao\manage\controller\OrderController.class
+com\taotao\manage\controller\TestController.class
+com\taotao\manage\bean\UserDto.class
+com\taotao\manage\controller\BaseController.class
+com\taotao\manage\datasource\DynamicDataSource.class
+com\taotao\manage\controller\LoginController.class
+com\taotao\manage\bean\PicUploadResult.class
+com\taotao\manage\controller\PageController.class
+com\taotao\manage\bean\Test.class
+com\taotao\manage\datasource\DynamicDataSourceHolder.class
+com\taotao\manage\datasource\DataSourceAspect.class
+com\taotao\manage\manage\SessionManager.class
+com\taotao\manage\manage\SessionManager$CleanThread.class
+com\taotao\manage\manage\LoginInterceptor.class
