@@ -42,6 +42,8 @@ public class Order extends ErrorMsg{
 	
 	private int num; 
 	
+	private List<OrderDetailDto> orderDetails ; 
+	
 	public String getId() {
 		return id;
 	}
@@ -194,6 +196,17 @@ public class Order extends ErrorMsg{
 
 	public void setNum(int num) {
 		this.num = num;
+	}
+
+	
+	
+
+	public List<OrderDetailDto> getOrderDetails() {
+		return orderDetails;
+	}
+
+	public void setOrderDetails(List<OrderDetailDto> orderDetails) {
+		this.orderDetails = orderDetails;
 	}
 
 	public Order(String msg) {

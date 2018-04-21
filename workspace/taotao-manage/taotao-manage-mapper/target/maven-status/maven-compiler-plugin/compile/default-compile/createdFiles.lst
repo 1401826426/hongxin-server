@@ -1,3 +1,4 @@
+com\taotao\manage\mapper\UserMapper.class
+com\taotao\manage\mapper\OrderDetailNameMapper.class
 com\taotao\manage\mapper\OrderInfoMapper.class
 com\taotao\manage\mapper\OrderTrackingMapper.class
-com\taotao\manage\mapper\UserMapper.class

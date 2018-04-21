@@ -45,5 +45,7 @@
 		<table schema="" tableName="order_info"></table>
 		<table schema="" tableName="user"></table>
 		<table schema="" tableName="order_tracking"></table>
+		<table schema="" tableName="order_detail"></table>
+		<table schema="" tableName="order_detail_name"></table>
 	</context>
 </generatorConfiguration>

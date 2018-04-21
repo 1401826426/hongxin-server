@@ -32,6 +32,6 @@ public interface OrderInfoMapper {
 			@Param("state") int state);
 
 	List<OrderInfo> selectAllOrders(@Param("st") int st, @Param("num") int num, @Param("userId") String userId);
-    
+
     
 }

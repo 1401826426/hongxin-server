@@ -9,8 +9,6 @@ import org.springframework.util.StringUtils;
 public class OrderInfo {
     private String id;
 
-    private String userId;
-
     private String orderNumber;
 
     private String picPath;
@@ -29,9 +27,9 @@ public class OrderInfo {
 
     private String trackingNumber;
 
-    private String orderContend;
+    private String detail;
 
-    private Integer num;
+    private String adminAckTracking;
 
     public String getId() {
         return id;
@@ -39,14 +37,6 @@ public class OrderInfo {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
     }
 
     public String getOrderNumber() {
@@ -121,20 +111,20 @@ public class OrderInfo {
         this.trackingNumber = trackingNumber == null ? null : trackingNumber.trim();
     }
 
-    public String getOrderContend() {
-        return orderContend;
+    public String getDetail() {
+        return detail;
     }
 
-    public void setOrderContend(String orderContend) {
-        this.orderContend = orderContend == null ? null : orderContend.trim();
+    public void setDetail(String detail) {
+        this.detail = detail == null ? null : detail.trim();
     }
 
-    public Integer getNum() {
-        return num;
+    public String getAdminAckTracking() {
+        return adminAckTracking;
     }
 
-    public void setNum(Integer num) {
-        this.num = num;
+    public void setAdminAckTracking(String adminAckTracking) {
+        this.adminAckTracking = adminAckTracking == null ? null : adminAckTracking.trim();
     }
     public void resetPic(String root){
     	if(!StringUtils.isEmpty(picPath)){
@@ -168,5 +158,4 @@ public class OrderInfo {
     	}
     	return list ; 
     }
-    
 }

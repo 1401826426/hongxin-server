@@ -1,5 +1,7 @@
 package com.taotao.common.bean;
 
+import java.util.List;
+
 public class OrderTrackingDto {
 	
 	private String orderId ; 
@@ -9,6 +11,8 @@ public class OrderTrackingDto {
 	private int num ; 
 	
 	private int state ;
+	
+	private List<OrderDetailDto> orderTrackingOrderDetails ; 
 
 	public String getOrderId() {
 		return orderId;
@@ -40,7 +44,17 @@ public class OrderTrackingDto {
 
 	public void setState(int state) {
 		this.state = state;
-	} 
+	}
+
+	public List<OrderDetailDto> getOrderTrackingOrderDetails() {
+		return orderTrackingOrderDetails;
+	}
+
+	public void setOrderTrackingOrderDetails(List<OrderDetailDto> orderTrackingOrderDetails) {
+		this.orderTrackingOrderDetails = orderTrackingOrderDetails;
+	}
+
+	
 	
 	
 	

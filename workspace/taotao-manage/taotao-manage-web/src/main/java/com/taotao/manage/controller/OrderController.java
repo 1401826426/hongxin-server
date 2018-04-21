@@ -1,6 +1,7 @@
 package com.taotao.manage.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.taotao.common.bean.Order;
 import com.taotao.manage.bean.UserDto;
 import com.taotao.manage.manage.Session;
-import com.taotao.manage.pojo.OrderInfo;
 import com.taotao.manage.service.api.IOrderService;
 
 @Controller
@@ -40,11 +40,9 @@ public class OrderController extends BaseController{
 		return orderService.getOrder(st,num,type,userDto.getId()) ; 
 	}
 	
-	
-	//买家创建订单
-	@RequestMapping(value="/create",method=RequestMethod.POST)
-	public ResponseEntity<Order> createOrder(OrderInfo order,HttpServletRequest request){
-		Session session = getSession(request) ; 
+	@RequestMapping(value = "/get/one" , method = RequestMethod.GET)
+	public ResponseEntity<Order>  getOrders(@RequestParam("orderId") String orderId, HttpServletRequest request){
+		Session session = getSession(request) ;
 		if(session == null){
 			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
 		}
@@ -52,12 +50,13 @@ public class OrderController extends BaseController{
 		if(userDto == null){
 			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
 		}
-		return orderService.createOrder(order,userDto.getId()); 
+		return orderService.getOneOrder(orderId,userDto.getId()) ; 
 	}
 	
-	//管理员确认订单
-	@RequestMapping(value="/adminAckOrder",method=RequestMethod.POST)
-	public ResponseEntity<Order> adminAckOrder(@RequestParam("orderId") String orderId , 
+	
+	//买家创建订单
+	@RequestMapping(value="/create",method=RequestMethod.POST)
+	public ResponseEntity<Order> createOrder(@RequestParam Map<String,Integer> orderDetails , 
 			HttpServletRequest request){
 		Session session = getSession(request) ; 
 		if(session == null){
@@ -67,7 +66,22 @@ public class OrderController extends BaseController{
 		if(userDto == null){
 			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
 		}
-		return orderService.adminAckOrder(orderId,userDto.getId()); 
+		return orderService.createOrder(orderDetails,userDto.getId()); 
+	}
+	
+	//管理员确认订单
+	@RequestMapping(value="/adminAckOrder",method=RequestMethod.POST)
+	public ResponseEntity<Order> adminAckOrder(@RequestParam("orderId") String orderId , @RequestParam("adminAckTracking") String adminAckTracking,
+			HttpServletRequest request){
+		Session session = getSession(request) ; 
+		if(session == null){
+			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
+		}
+		UserDto userDto = session.getUserDto() ; 
+		if(userDto == null){
+			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
+		}
+		return orderService.adminAckOrder(orderId,adminAckTracking,userDto.getId()); 
 	}
 	
 	
@@ -104,7 +118,8 @@ public class OrderController extends BaseController{
 	//卖家确认发货
 	@RequestMapping(value="/sellAck",method=RequestMethod.POST)
 	public ResponseEntity<Order> sellAck(@RequestParam("trackingNumber") String trackingNumber ,
-			@RequestParam("orderId") String orderId ,@RequestParam("num") int num, HttpServletRequest request){
+			@RequestParam("orderId") String orderId ,@RequestParam("num") int num, 
+			@RequestParam("orderDetails") Map<String,Integer> orderDetails , HttpServletRequest request){
 		Session session = getSession(request) ; 
 		if(session == null){
 			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
@@ -113,7 +128,7 @@ public class OrderController extends BaseController{
 		if(userDto == null){
 			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
 		}
-		return orderService.setSellAck(userDto.getId() , orderId , trackingNumber , num) ; 
+		return orderService.setSellAck(userDto.getId() , orderId , trackingNumber , num ,orderDetails) ; 
 	}
 	
 
@@ -132,8 +147,58 @@ public class OrderController extends BaseController{
 	}
 	
 
+	@RequestMapping(value="/updateOrderDetailName",method=RequestMethod.POST)
+	public ResponseEntity<Order> updateOrderDetailName(@RequestParam("names") List<String> names, 
+			HttpServletRequest request){
+		Session session = getSession(request) ; 
+		if(session == null){
+			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
+		}
+		UserDto userDto = session.getUserDto() ; 
+		if(userDto == null){
+			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
+		}
+		return orderService.updateOrderDetailName(names,userDto.getId()) ;  
+	}
 	
+	@RequestMapping(value="/orderDetailNames",method=RequestMethod.GET)
+	public ResponseEntity<List<String>> updateOrderDetailName(HttpServletRequest request){
+		Session session = getSession(request) ; 
+		if(session == null){
+			return new ResponseEntity<List<String>>(HttpStatus.FORBIDDEN) ; 
+		}
+		UserDto userDto = session.getUserDto() ; 
+		if(userDto == null){
+			return new ResponseEntity<List<String>>(HttpStatus.FORBIDDEN) ; 
+		}
+		return orderService.getOrderDetailNames(userDto.getId()) ;  
+	}
 	
+	@RequestMapping(value="/orderDetailNames/add",method=RequestMethod.POST)
+	public ResponseEntity<Order> addOrderDetailName(HttpServletRequest request,@RequestParam("name") String name){
+		Session session = getSession(request) ; 
+		if(session == null){
+			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
+		}
+		UserDto userDto = session.getUserDto() ; 
+		if(userDto == null){
+			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
+		}
+		return orderService.addOrderDetailNames(userDto.getId(),name) ;  
+	}
+	
+	@RequestMapping(value="/orderDetailNames/delete",method=RequestMethod.POST)
+	public ResponseEntity<Order> deleteOrderDetailName(HttpServletRequest request,@RequestParam("name") String name){
+		Session session = getSession(request) ; 
+		if(session == null){
+			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
+		}
+		UserDto userDto = session.getUserDto() ; 
+		if(userDto == null){
+			return new ResponseEntity<Order>(HttpStatus.FORBIDDEN) ; 
+		}
+		return orderService.deleteOrderDetailNames(userDto.getId(),name) ;  
+	}
 	
 }
 

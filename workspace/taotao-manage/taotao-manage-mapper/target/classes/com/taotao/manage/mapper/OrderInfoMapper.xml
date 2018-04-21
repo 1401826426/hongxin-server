@@ -3,7 +3,6 @@
 <mapper namespace="com.taotao.manage.mapper.OrderInfoMapper" >
   <resultMap id="BaseResultMap" type="com.taotao.manage.pojo.OrderInfo" >
     <id column="id" property="id" jdbcType="VARCHAR" />
-    <result column="user_id" property="userId" jdbcType="VARCHAR" />
     <result column="order_number" property="orderNumber" jdbcType="VARCHAR" />
     <result column="pic_path" property="picPath" jdbcType="VARCHAR" />
     <result column="state" property="state" jdbcType="INTEGER" />
@@ -13,8 +12,8 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
     <result column="tracking_number" property="trackingNumber" jdbcType="VARCHAR" />
-    <result column="order_contend" property="orderContend" jdbcType="VARCHAR" />
-    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="detail" property="detail" jdbcType="VARCHAR" />
+    <result column="admin_ack_tracking" property="adminAckTracking" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -75,8 +74,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, user_id, order_number, pic_path, state, buy_user, sell_user, admin, create_time, 
-    updatetime, tracking_number, order_contend, num
+    id, order_number, pic_path, state, buy_user, sell_user, admin, create_time, updatetime, 
+    tracking_number, detail, admin_ack_tracking
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.taotao.manage.pojo.OrderInfoExample" >
     select
@@ -109,25 +108,22 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.taotao.manage.pojo.OrderInfo" >
-    insert into order_info (id, user_id, order_number, 
-      pic_path, state, buy_user, 
-      sell_user, admin, create_time, 
-      updatetime, tracking_number, order_contend, 
-      num)
-    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{orderNumber,jdbcType=VARCHAR}, 
-      #{picPath,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{buyUser,jdbcType=VARCHAR}, 
-      #{sellUser,jdbcType=VARCHAR}, #{admin,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updatetime,jdbcType=TIMESTAMP}, #{trackingNumber,jdbcType=VARCHAR}, #{orderContend,jdbcType=VARCHAR}, 
-      #{num,jdbcType=INTEGER})
+    insert into order_info (id, order_number, pic_path, 
+      state, buy_user, sell_user, 
+      admin, create_time, updatetime, 
+      tracking_number, detail, admin_ack_tracking
+      )
+    values (#{id,jdbcType=VARCHAR}, #{orderNumber,jdbcType=VARCHAR}, #{picPath,jdbcType=VARCHAR}, 
+      #{state,jdbcType=INTEGER}, #{buyUser,jdbcType=VARCHAR}, #{sellUser,jdbcType=VARCHAR}, 
+      #{admin,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, 
+      #{trackingNumber,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{adminAckTracking,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.taotao.manage.pojo.OrderInfo" >
     insert into order_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
-      </if>
-      <if test="userId != null" >
-        user_id,
       </if>
       <if test="orderNumber != null" >
         order_number,
@@ -156,19 +152,16 @@
       <if test="trackingNumber != null" >
         tracking_number,
       </if>
-      <if test="orderContend != null" >
-        order_contend,
+      <if test="detail != null" >
+        detail,
       </if>
-      <if test="num != null" >
-        num,
+      <if test="adminAckTracking != null" >
+        admin_ack_tracking,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         #{id,jdbcType=VARCHAR},
-      </if>
-      <if test="userId != null" >
-        #{userId,jdbcType=VARCHAR},
       </if>
       <if test="orderNumber != null" >
         #{orderNumber,jdbcType=VARCHAR},
@@ -197,11 +190,11 @@
       <if test="trackingNumber != null" >
         #{trackingNumber,jdbcType=VARCHAR},
       </if>
-      <if test="orderContend != null" >
-        #{orderContend,jdbcType=VARCHAR},
+      <if test="detail != null" >
+        #{detail,jdbcType=VARCHAR},
       </if>
-      <if test="num != null" >
-        #{num,jdbcType=INTEGER},
+      <if test="adminAckTracking != null" >
+        #{adminAckTracking,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -216,9 +209,6 @@
     <set >
       <if test="record.id != null" >
         id = #{record.id,jdbcType=VARCHAR},
-      </if>
-      <if test="record.userId != null" >
-        user_id = #{record.userId,jdbcType=VARCHAR},
       </if>
       <if test="record.orderNumber != null" >
         order_number = #{record.orderNumber,jdbcType=VARCHAR},
@@ -247,11 +237,11 @@
       <if test="record.trackingNumber != null" >
         tracking_number = #{record.trackingNumber,jdbcType=VARCHAR},
       </if>
-      <if test="record.orderContend != null" >
-        order_contend = #{record.orderContend,jdbcType=VARCHAR},
+      <if test="record.detail != null" >
+        detail = #{record.detail,jdbcType=VARCHAR},
       </if>
-      <if test="record.num != null" >
-        num = #{record.num,jdbcType=INTEGER},
+      <if test="record.adminAckTracking != null" >
+        admin_ack_tracking = #{record.adminAckTracking,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -261,7 +251,6 @@
   <update id="updateByExample" parameterType="map" >
     update order_info
     set id = #{record.id,jdbcType=VARCHAR},
-      user_id = #{record.userId,jdbcType=VARCHAR},
       order_number = #{record.orderNumber,jdbcType=VARCHAR},
       pic_path = #{record.picPath,jdbcType=VARCHAR},
       state = #{record.state,jdbcType=INTEGER},
@@ -271,8 +260,8 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       updatetime = #{record.updatetime,jdbcType=TIMESTAMP},
       tracking_number = #{record.trackingNumber,jdbcType=VARCHAR},
-      order_contend = #{record.orderContend,jdbcType=VARCHAR},
-      num = #{record.num,jdbcType=INTEGER}
+      detail = #{record.detail,jdbcType=VARCHAR},
+      admin_ack_tracking = #{record.adminAckTracking,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -280,9 +269,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.taotao.manage.pojo.OrderInfo" >
     update order_info
     <set >
-      <if test="userId != null" >
-        user_id = #{userId,jdbcType=VARCHAR},
-      </if>
       <if test="orderNumber != null" >
         order_number = #{orderNumber,jdbcType=VARCHAR},
       </if>
@@ -310,19 +296,18 @@
       <if test="trackingNumber != null" >
         tracking_number = #{trackingNumber,jdbcType=VARCHAR},
       </if>
-      <if test="orderContend != null" >
-        order_contend = #{orderContend,jdbcType=VARCHAR},
+      <if test="detail != null" >
+        detail = #{detail,jdbcType=VARCHAR},
       </if>
-      <if test="num != null" >
-        num = #{num,jdbcType=INTEGER},
+      <if test="adminAckTracking != null" >
+        admin_ack_tracking = #{adminAckTracking,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.taotao.manage.pojo.OrderInfo" >
     update order_info
-    set user_id = #{userId,jdbcType=VARCHAR},
-      order_number = #{orderNumber,jdbcType=VARCHAR},
+    set order_number = #{orderNumber,jdbcType=VARCHAR},
       pic_path = #{picPath,jdbcType=VARCHAR},
       state = #{state,jdbcType=INTEGER},
       buy_user = #{buyUser,jdbcType=VARCHAR},
@@ -331,8 +316,8 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       updatetime = #{updatetime,jdbcType=TIMESTAMP},
       tracking_number = #{trackingNumber,jdbcType=VARCHAR},
-      order_contend = #{orderContend,jdbcType=VARCHAR},
-      num = #{num,jdbcType=INTEGER}
+      detail = #{detail,jdbcType=VARCHAR},
+      admin_ack_tracking = #{adminAckTracking,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <select id="selectOrders" resultMap="BaseResultMap">
@@ -346,4 +331,5 @@
 		sell_user = #{userId} or admin = #{userId}
 		order by updatetime desc limit #{st},#{num} ;
 	</select>
+  
 </mapper>

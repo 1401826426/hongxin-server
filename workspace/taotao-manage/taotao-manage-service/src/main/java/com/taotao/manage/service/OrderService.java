@@ -2,8 +2,12 @@ package com.taotao.manage.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +15,16 @@ import org.springframework.stereotype.Service;
 
 import com.taotao.common.bean.Mail;
 import com.taotao.common.bean.Order;
+import com.taotao.common.bean.OrderDetailDto;
 import com.taotao.common.bean.OrderTrackingDto;
 import com.taotao.common.util.IdGenerator;
+import com.taotao.common.util.OrderDetailUtil;
+import com.taotao.manage.mapper.OrderDetailNameMapper;
 import com.taotao.manage.mapper.OrderInfoMapper;
 import com.taotao.manage.mapper.OrderTrackingMapper;
 import com.taotao.manage.mapper.UserMapper;
+import com.taotao.manage.pojo.OrderDetailName;
+import com.taotao.manage.pojo.OrderDetailNameExample;
 import com.taotao.manage.pojo.OrderInfo;
 import com.taotao.manage.pojo.OrderInfoExample;
 import com.taotao.manage.pojo.OrderState;
@@ -39,12 +48,16 @@ public class OrderService implements IOrderService {
 
 	@Autowired
 	private OrderTrackingMapper orderTrackingMapper;
+	
+	@Autowired 
+	private OrderDetailNameMapper orderDetailMapper; 
 
 	@Autowired
 	private PropertieService propertiesService;
 
 	@Autowired
 	private SendMailUtil sendMailUtil;
+	
 
 	// 获取订单
 	@Override
@@ -64,9 +77,25 @@ public class OrderService implements IOrderService {
 		return new ResponseEntity<List<Order>>(result, HttpStatus.OK);
 	}
 
+	@Override
+	public ResponseEntity<Order> getOneOrder(String orderId, String userId) {
+		OrderInfo order = orderInfoMapper.selectByPrimaryKey(orderId) ; 
+		if(order == null){
+			return new ResponseEntity<Order>(new Order("没有订单详情"), HttpStatus.BAD_REQUEST);
+		}
+		if(!userId.equals(order.getBuyUser()) && !userId.equals(order.getSellUser()) && !userId.equals(order.getAdmin())){
+			return new ResponseEntity<Order>(new Order("没有权限查看此订单"), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<Order>(getOrder(order), HttpStatus.OK);
+	}
+	
 	// 创建订单
 	@Override
-	public ResponseEntity<Order> createOrder(OrderInfo order, String userId) {
+	public ResponseEntity<Order> createOrder(Map<String,Integer> orderDetails , String userId) {
+		if(orderDetails == null || orderDetails.size() == 0){
+			return new ResponseEntity<Order>(new Order("没有订单详情"), HttpStatus.BAD_REQUEST);
+		}
+		OrderInfo order = new OrderInfo() ; 
 		String id = IdGenerator.generateStringId();
 		String order_number = IdGenerator.generateStringId();
 		order.setId(id);
@@ -77,9 +106,12 @@ public class OrderService implements IOrderService {
 		order.setBuyUser(userId);
 		User admin = getAdmin();
 		order.setAdmin(admin.getId());
+		order.setDetail(OrderDetailUtil.get(orderDetails));
 		orderInfoMapper.insert(order);
+
 		return new ResponseEntity<Order>(getOrder(order), HttpStatus.OK);
 	}
+
 
 	private User getAdmin() {
 		UserExample example = new UserExample();
@@ -120,16 +152,16 @@ public class OrderService implements IOrderService {
 			order.setSellUserName(sell.getName());
 		}
 		order.setPics(orderInfo.getPicPath(propertiesService.getIMAGE_BASE_URL()));
-		order.setOrderContend(orderInfo.getOrderContend());
 		order.setOrderNumber(orderInfo.getOrderNumber());
 		order.setCreateTime(orderInfo.getCreateTime());
 		order.setUpdatetime(orderInfo.getUpdatetime());
 		order.setState(orderInfo.getState());
 //		order.setTrackingNumber(orderInfo.getTrackingNumber());
-		order.setNum(orderInfo.getNum());
 		order.setBuyUserId(orderInfo.getBuyUser());
 		order.setSellUserId(orderInfo.getSellUser());
 		order.setAdminUserId(orderInfo.getAdmin());
+		List<OrderDetailDto> orderDetails = OrderDetailUtil.parse(orderInfo.getDetail()) ;  
+		order.setOrderDetails(orderDetails);
 		List<OrderTracking> orderTrackings = getOrderTracking(orderInfo.getId()) ; 
 		List<OrderTrackingDto> orderTrackingDtos = new ArrayList<OrderTrackingDto>() ; 
 		for(OrderTracking orderTracking:orderTrackings){
@@ -137,7 +169,8 @@ public class OrderService implements IOrderService {
 			orderTrackingDto.setOrderId(orderTracking.getOrderId());
 			orderTrackingDto.setTrackingNum(orderTracking.getTrackingNumber());
 			orderTrackingDto.setState(orderTracking.getState());
-			orderTrackingDto.setNum(orderTracking.getNum());
+//			orderTrackingDto.setNum(orderTracking.getNum()); 
+			orderTrackingDto.setOrderTrackingOrderDetails(OrderDetailUtil.parse(orderTracking.getDetail()));
 			orderTrackingDtos.add(orderTrackingDto) ; 
 		}
 		order.setOrderTrackings(orderTrackingDtos);
@@ -146,17 +179,19 @@ public class OrderService implements IOrderService {
 
 	
 	
+	
+
 	private List<OrderTracking> getOrderTracking(String orderId) {
 		OrderTrackingExample example = new OrderTrackingExample() ; 
 		com.taotao.manage.pojo.OrderTrackingExample.Criteria criteria = example.createCriteria() ; 
-		criteria.andOrderIdEqualTo(orderId) ; 
+  		criteria.andOrderIdEqualTo(orderId) ; 
 		List<OrderTracking> list = orderTrackingMapper.selectByExample(example) ;
 		return list;
 	}
 
 	// 管理员确认订单
 	@Override
-	public ResponseEntity<Order> adminAckOrder(String orderId, String userId) {
+	public ResponseEntity<Order> adminAckOrder(String orderId,String adminAckTracking, String userId) {
 		User user = getUser(userId);
 		if (user == null || !user.isAdmin()) {
 			return new ResponseEntity<Order>(new Order("不是管理员"), HttpStatus.BAD_REQUEST);
@@ -167,6 +202,7 @@ public class OrderService implements IOrderService {
 		}
 		orderInfo.setState(OrderState.ADMIN_ACK_ORDER.getState());
 		orderInfo.setUpdatetime(new Date());
+		orderInfo.setAdminAckTracking(adminAckTracking);
 		orderInfoMapper.updateByPrimaryKey(orderInfo);
 		return new ResponseEntity<Order>(getOrder(orderInfo), HttpStatus.OK);
 	}
@@ -237,7 +273,7 @@ public class OrderService implements IOrderService {
 
 	//卖家确认发货
 	@Override
-	public ResponseEntity<Order> setSellAck(String userid, String orderId, String trackingNumber, int num) {
+	public ResponseEntity<Order> setSellAck(String userid, String orderId, String trackingNumber, int num , Map<String,Integer> orderDetails) {
 		OrderInfoExample example = new OrderInfoExample();
 		com.taotao.manage.pojo.OrderInfoExample.Criteria criteria = example.createCriteria();
 		criteria.andIdEqualTo(orderId).andSellUserEqualTo(userid);
@@ -256,22 +292,25 @@ public class OrderService implements IOrderService {
 			if(orderTracking != null){
 				return new ResponseEntity<Order>(new Order(orderId + "订单已经有订单号为" + trackingNumber +"的物流信息"), HttpStatus.BAD_REQUEST);
 			}
+			if(orderDetails == null){
+				return new ResponseEntity<Order>(new Order("没有订单详细信息"), HttpStatus.BAD_REQUEST);
+			}
 			orderTracking = new OrderTracking() ; 
 			String id = IdGenerator.generateStringId() ; 
 			orderTracking.setId(id);
 			orderTracking.setOrderId(orderId);
 			orderTracking.setTrackingNumber(trackingNumber);
-			orderTracking.setNum(num);
+			orderTracking.setDetail(OrderDetailUtil.get(orderDetails));
 			orderTracking.setState(OrderTrackingState.CREATE.getState());
 			orderTrackingMapper.insert(orderTracking) ;
-			int allnum = getOrderTrackingNum(orderId) ; 
-			if(allnum >= order.getNum()){
+			if(checkAllSend(order)){
 				order.setState(OrderState.SELLER_ACK.getState());
 			}else{
 				order.setState(OrderState.IN_DELIVERY.getState());
 			}
 			order.setUpdatetime(new Date());
 			orderInfoMapper.updateByPrimaryKey(order);
+			
 			User user = getUser(order.getBuyUser());
 			Mail mail = new Mail(user.getMail(), propertiesService.getBUY_MAIL_SUBJECT(),
 					propertiesService.getBUY_MAIL_CONTENT());
@@ -282,17 +321,50 @@ public class OrderService implements IOrderService {
 		}
 	}
 
-	private int getOrderTrackingNum(String orderId) {
-		List<OrderTracking> list = getOrderTracking(orderId) ; 
- 		int num = 0 ; 
-		if(list != null){
-			for(OrderTracking orderTracking : list){
-				num += orderTracking.getNum() ; 
+	private boolean checkAllSend(OrderInfo order) {
+//		List<OrderDetailDto> orderTrackingDtos = getOrderDetails(order.getId(),OrderDetailType.ORDER.getType()) ;
+		List<OrderDetailDto> orderDetails = OrderDetailUtil.parse(order.getDetail()) ; 
+		Map<String,Integer> map = new HashMap<String,Integer>() ; 
+		for(OrderDetailDto orderDetailDto:orderDetails){
+			String name = orderDetailDto.getName() ; 
+			if(map.containsKey(name)){
+				map.put(name, map.get(name)+orderDetailDto.getNum()) ; 
+			}else{
+				map.put(name, orderDetailDto.getNum()) ; 
 			}
 		}
-		return num;
+		List<OrderTracking> orderTrackings = getOrderTracking(order.getId()) ; 
+		for(OrderTracking orderTracking:orderTrackings){
+			List<OrderDetailDto> list  = OrderDetailUtil.parse(orderTracking.getDetail()) ; 	
+			for(OrderDetailDto orderDetailDto:list){
+				String name = orderDetailDto.getName() ; 
+				if(map.containsKey(name)){
+					map.put(name, map.get(name)-orderDetailDto.getNum()) ; 
+				}
+			}
+		}
+		for(int num:map.values()){
+			if(num > 0){
+				return false ; 
+			}
+		}
+		return true;
 	}
 
+
+	public boolean checkAllRecieve(OrderInfo order){
+		if(order.getState() != OrderState.SELLER_ACK.getState()){
+			return false ;
+		}
+		List<OrderTracking> list = getOrderTracking(order.getId()) ;
+		for(OrderTracking orderTracking:list){
+			if(orderTracking.getState() != OrderTrackingState.ACK.getState()){
+				return false ; 
+			}
+		}
+		return true; 
+	}
+	
 	private OrderTracking getOrderTracking(String orderId, String trackingNumber) {
 		OrderTrackingExample example = new OrderTrackingExample() ; 
 		com.taotao.manage.pojo.OrderTrackingExample.Criteria criteria = example.createCriteria() ; 
@@ -325,9 +397,8 @@ public class OrderService implements IOrderService {
 				return new ResponseEntity<Order>(new Order(orderId+"没有订单号为"+trackingNumber+"的物流"), HttpStatus.BAD_REQUEST);
 			}
 			orderTracking.setState(OrderTrackingState.ACK.getState());
-			orderTrackingMapper.updateByPrimaryKey(orderTracking) ; 
-			int ackNum = getOrderTrackingAckNum(orderId) ; 
-			if(ackNum >= order.getNum()){
+			orderTrackingMapper.updateByPrimaryKey(orderTracking) ;  
+			if(checkAllRecieve(order)){
 				order.setState(OrderState.DONE.getState());
 				order.setUpdatetime(new Date());
 				orderInfoMapper.updateByPrimaryKey(order) ; 
@@ -338,22 +409,79 @@ public class OrderService implements IOrderService {
 		}
 	}
 
-	private int getOrderTrackingAckNum(String orderId) {
-		OrderTrackingExample example = new OrderTrackingExample() ; 
-		com.taotao.manage.pojo.OrderTrackingExample.Criteria criteria = example.createCriteria() ; 
-		criteria.andOrderIdEqualTo(orderId).andStateEqualTo(OrderTrackingState.ACK.getState()) ; 
-		List<OrderTracking> list = orderTrackingMapper.selectByExample(example) ;
-		int num = 0 ; 
-		if(list != null){
-			for(OrderTracking orderTracking : list){
-				num += orderTracking.getNum() ; 
-			}
-		}
-		return num;
-	}
-
 	private OrderInfo getOrderInfo(String orderId) {
 		return orderInfoMapper.selectByPrimaryKey(orderId);
 	}
 
+	@Override
+	public ResponseEntity<Order> updateOrderDetailName(List<String> names, String id) {
+		User user = getUser(id) ; 
+		if(user == null || !user.isAdmin()){
+			return new ResponseEntity<Order>(new Order("不是管理员"), HttpStatus.BAD_REQUEST);
+		}
+		OrderDetailNameExample example = new OrderDetailNameExample() ; 
+		orderDetailMapper.deleteByExample(example) ;  
+		for(String name:names){
+			OrderDetailName orderDetailName =  new OrderDetailName() ;
+			orderDetailName.setName(name);
+			orderDetailMapper.insert(orderDetailName) ; 
+		}
+		return new ResponseEntity<Order>(HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<List<String>> getOrderDetailNames(String userid) {
+		OrderDetailNameExample example = new OrderDetailNameExample() ;
+		List<OrderDetailName> list = orderDetailMapper.selectByExample(example) ; 
+		List<String> result = new LinkedList<String>() ; 
+		for(OrderDetailName name:list){
+			result.add(name.getName()) ; 
+		}
+		return new ResponseEntity<List<String>>(result , HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<Order> addOrderDetailNames(String id, String name) {
+		User user = getUser(id) ; 
+		if(user == null || !user.isAdmin()){
+			return new ResponseEntity<Order>(new Order("不是管理员"), HttpStatus.BAD_REQUEST);
+		}
+		if(StringUtils.isBlank(name)){
+			return new ResponseEntity<Order>(new Order("添加的名字不能为空"), HttpStatus.BAD_REQUEST);
+		}
+		OrderDetailNameExample example = new OrderDetailNameExample() ;
+		com.taotao.manage.pojo.OrderDetailNameExample.Criteria criterai = example.createCriteria() ;
+		criterai.andNameEqualTo(name) ; 
+		List<OrderDetailName> orderDetailNames = orderDetailMapper.selectByExample(example) ; 
+		if(orderDetailNames != null && orderDetailNames.size() > 0){
+			return new ResponseEntity<Order>(new Order("已经有这个名字"), HttpStatus.BAD_REQUEST);
+		}
+		OrderDetailName orderDetailName = new OrderDetailName() ; 
+		orderDetailName.setName(name);
+		orderDetailMapper.insert(orderDetailName) ; 
+		return new ResponseEntity<Order>(HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<Order> deleteOrderDetailNames(String id, String name) {
+		User user = getUser(id) ; 
+		if(user == null || !user.isAdmin()){
+			return new ResponseEntity<Order>(new Order("不是管理员"), HttpStatus.BAD_REQUEST);
+		}
+		orderDetailMapper.deleteByPrimaryKey(name) ; 
+		return new ResponseEntity<Order>(HttpStatus.OK);
+	}
+
+	
+
+
 }
+
+
+
+
+
+
+
+
+

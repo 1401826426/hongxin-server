@@ -1,5 +1,6 @@
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\util\CookieUtils.java
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\bean\Mail.java
+E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\bean\OrderTrackingContentDto.java
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\bean\HttpResult.java
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\bean\OrderTrackingDto.java
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\bean\ItemCatData.java
@@ -7,6 +8,8 @@ E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\comm
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\util\IdGenerator.java
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\service\Function.java
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\bean\Order.java
+E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\util\OrderDetailUtil.java
+E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\bean\OrderDetailDto.java
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\util\FileUtil.java
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\bean\ErrorMsg.java
 E:\eclipse_Projects\taotao\workspace\taotao-common\src\main\java\com\taotao\common\service\ApiService.java
